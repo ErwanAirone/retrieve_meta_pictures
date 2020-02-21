@@ -33,7 +33,7 @@ if __name__ == "__main__":
     Brightness = []
     Shutter_speed = []
     ISO = []
-    for i in range(0, nb_pic_rasp):
+    for i in range(1, nb_pic_rasp + 1):
         image_file_rasp = open(str(i) + 'rasp.jpg', 'rb')
         image_file_omx = open(str(i) + 'omx.jpg', 'rb')
         iso_rasp = open(str(i) + 'rasp.jpg', 'rb')
@@ -60,7 +60,7 @@ if __name__ == "__main__":
     Tab.append(ISO)
 
     print(' '.rjust(14,'_'), end='')
-    for i in range(0, len(ISO)):
+    for i in range(1, len(ISO) + 1):
         print('| Raspicam, Omxcam ', 'Img' + str(i),' ', end='')
     print('')
     count = 0
@@ -77,3 +77,44 @@ if __name__ == "__main__":
             print(' |', str(element).rjust(23, ' '), end='')
         print('')
         count += 1
+
+    f = open("file.csv", "w+")
+    count = 0
+    f.write("Raspicam:")
+    for i in range (1, len(Tab[1]) + 1):
+        f.write("," + str(i))
+    f.write("\n")
+    for line in Tab:
+        if count == 0:
+            f.write("Exposure")
+        elif count == 1:
+            f.write("Brightness")
+        elif count == 2:
+            f.write("Shutter_speed")
+        else:
+            f.write("ISO")
+        for element_rasp in line:
+            f.write(",%s" % str(element_rasp[0]))
+        f.write("\n")
+        count += 1
+    count = 0
+    f.write("\n")
+    f.write("Omxcam:")
+    for i in range (1, len(Tab[1]) + 1):
+        f.write("," + str(i))
+    f.write("\n")
+    for line in Tab:
+        if count == 0:
+            f.write("Exposure")
+        elif count == 1:
+            f.write("Brightness")
+        elif count == 2:
+            f.write("Shutter_speed")
+        else:
+            f.write("ISO")
+        for element_omx in line:
+            f.write(",%s" % str(element_omx[1]))
+        f.write("\n")
+        count += 1
+
+    f.close()
