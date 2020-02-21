@@ -28,11 +28,11 @@ if __name__ == "__main__":
             nb_pic_rasp += 1
         if 'omx.jpg' in file:
             nb_pic_omx += 1
-    dico = {}
-    dico["Exposure"] = []
-    dico["Brightness"] = []
-    dico["Shutter_speed"] = []
-    dico["ISO"] = []
+    Tab = []
+    Exposure = []
+    Brightness = []
+    Shutter_speed = []
+    ISO = []
     for i in range(0, nb_pic_rasp):
         image_file_rasp = open(str(i) + 'rasp.jpg', 'rb')
         image_file_omx = open(str(i) + 'omx.jpg', 'rb')
@@ -41,9 +41,9 @@ if __name__ == "__main__":
         image_rasp = Image(image_file_rasp)
         image_omx = Image(image_file_omx)
 
-        dico["Exposure"].append((image_rasp.exposure_time, image_omx.exposure_time))
-        dico["Brightness"].append((image_rasp.brightness_value, image_omx.brightness_value))
-        dico["Shutter_speed"].append((image_rasp.shutter_speed_value, image_omx.shutter_speed_value))
+        Exposure.append((image_rasp.exposure_time, image_omx.exposure_time))
+        Brightness.append((image_rasp.brightness_value, image_omx.brightness_value))
+        Shutter_speed.append((image_rasp.shutter_speed_value, image_omx.shutter_speed_value))
 
         tags = exifread.process_file(iso_rasp)
         s_rasp = tags['EXIF ISOSpeedRatings']
@@ -53,12 +53,27 @@ if __name__ == "__main__":
         s_omx = tags['EXIF ISOSpeedRatings']
         new_omx = find_between(repr(s_omx), '=', ' @')
 
-        dico["ISO"].append((int(new_rasp), int(new_omx)))
-    for line in dico:
-        print(line, " : ", dico[line])
-    #e = dict_to_xml('pableau', dico)
-    #print(tostring(e))
-    #text_file = open('tableur.xml', 'wb')
-    #d = tostring(e)
-    #text_file.write(d)
-    #text_file.close()
+        ISO.append((int(new_rasp), int(new_omx)))
+    Tab.append(Exposure)
+    Tab.append(Brightness)
+    Tab.append(Shutter_speed)
+    Tab.append(ISO)
+
+    print(' '.rjust(14,'_'), end='')
+    for i in range(0, len(ISO)):
+        print('| Raspicam, Omxcam ', 'Img' + str(i),' ', end='')
+    print('')
+    count = 0
+    for line in Tab:
+        if count == 0:
+            print('Exposure'.ljust(13, ' '), end='')
+        elif count == 1:
+            print('Brightness'.ljust(13,' '), end='')
+        elif count == 2:
+            print('Shutter_speed'.ljust(13,' '), end='')
+        else:
+            print('ISO'.ljust(13,' '), end='')
+        for element in line:
+            print(' |', str(element).rjust(23, ' '), end='')
+        print('')
+        count += 1
